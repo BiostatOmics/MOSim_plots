@@ -38,7 +38,7 @@ calculate_mean_per_list_df <- function(df, named_lists) {
 
 ### read the simulated dataset
 
-sim <- readRDS("~/workspace/1_conesalab/test_scMOSim/paper_plots/sim_6cells8clus1600_scMOSim_2groups_000.rds")
+sim <- readRDS(paste0("~/workspace/1_conesalab/test_scMOSim/paper_plots/sim_6cells8clus10000_scMOSim_2groups_", s, ".rds"))
 
 settings <- scOmicSettings(sim, TF = TRUE)
 
@@ -57,7 +57,7 @@ ct <- tibble::tibble(Cell = colnames(sim$Group_1$Rep_1$`sim_scRNA-seq`@counts),
 ### PLOT ORIGINAL CLUSTERS
 
 ## Extract clusters list to plot originals
-clusters_list <- sim$AssociationMatrices$AssociationMatrix_Group_1[sim$AssociationMatrices$AssociationMatrix_Group_1$Gene_cluster %in% c(1:8), c("Gene_ID", "Gene_cluster")]
+clusters_list <- sim$AssociationMatrices$AssociationMatrix_Group_1[sim$AssociationMatrices$AssociationMatrix_Group_1$Gene_cluster %in% c(1,2,3,4,5,6,8), c("Gene_ID", "Gene_cluster")]
 clusters_list <- split(clusters_list$Gene_ID, clusters_list$Gene_cluster)
 
 
@@ -76,7 +76,7 @@ pattern_plots <- purrr::map(cluster_patterns, plot_cluster_profile, ct_labels = 
 plot_grid(plotlist = pattern_plots, 
           labels = NULL, 
           ncol = 4)
-ggsave(width = 8, height = 5, paste0("~/workspace/1_conesalab/test_scMOSim/paper_plots/", s, "_Supp_OriClusters_acordeScaled_RNA.pdf"))
+ggsave(width = 8, height = 5, paste0("~/workspace/1_conesalab/test_scMOSim/paper_plots/", s, "_G2_Supp_OriClusters_acordeScaled_RNA.pdf"))
 
 ####### Clustering genes with acorde scaling, kendall and kmedoids
 
@@ -86,7 +86,7 @@ rna$transcript <- NULL
 
 means_celltype_rna <- calculate_mean_per_list_df(rna, cell_types)
 
-asocG2 <- sim$AssociationMatrices$AssociationMatrix_Group_3[sim$AssociationMatrices$AssociationMatrix_Group_1$Gene_cluster %in% c(1:6),]
+asocG2 <- sim$AssociationMatrices$AssociationMatrix_Group_1[sim$AssociationMatrices$AssociationMatrix_Group_1$Gene_cluster %in% c(1,2,3,4,5,6,8),]
 means_celltype_rna <- as.data.frame(means_celltype_rna[rownames(means_celltype_rna) %in% asocG2$Gene_ID,])
 
 means_celltype_rna[is.na(means_celltype_rna)] <- 0
@@ -94,7 +94,7 @@ means_celltype_rna[is.na(means_celltype_rna)] <- 0
 rna_kendall_dist <- stats::cor(t(means_celltype_rna), method = "kendall")
 rna_kendall_dist[is.na(rna_kendall_dist)] <- 0
 
-rna_pam <- cluster::pam(1 - rna_kendall_dist, diss = TRUE, k = 6)
+rna_pam <- cluster::pam(1 - rna_kendall_dist, diss = TRUE, k = 7)
 
 pam_cluster <- as.data.frame(rna_pam$clustering)
 colnames(pam_cluster) <- c("pam_cluster")
@@ -125,34 +125,55 @@ rna_with_clust_info %>%
   group_by(variable) %>%  
   mutate(row_num =  1:n()) %>% 
   ggplot(aes(x =  variable , y = value , group = row_num)) +   
-  geom_line(alpha = 1, color = "grey") + 
+  geom_line(alpha = 1, color = "gray85") + 
   geom_line(data = df, aes(x = variable, y= value, group = row_num), linewidth = 1, color = "red3") +
   theme_bw() +  
   theme(legend.position = "none" , axis.text.x = element_text(angle = 45 , vjust = 0.4)) +
   facet_wrap(~clust, ncol = 4)
-ggsave(width = 8, height = 4, paste0("~/workspace/1_conesalab/test_scMOSim/paper_plots/", s, "_3A_G1_kendallPAM_acordeScaled.pdf"))
+ggsave(width = 8, height = 4, paste0("~/workspace/1_conesalab/test_scMOSim/paper_plots/", s, "_3A_G2_kendallPAM_acordeScaled.pdf"))
 
 
 ##### Plot scree of the medoids
 
 sil_width <- c(NA)
- 
+
 for(i in 2:15){
-  
+
   pam_fit <- pam(rna_kendall_dist,
                  diss = TRUE,
                  k = i)
-  
+
   sil_width[i] <- pam_fit$silinfo$avg.width
-  
+
 }
 
 sil_width <- data.frame(
-  Position = 1:length(sil_width), 
+  Position = 1:length(sil_width),
   Value = sil_width)
 
 ggplot(sil_width, aes(x = Position, y = Value)) + geom_point() + geom_line() +
   labs(x = "Number of medoids", y = "Pam average fit") + theme_classic()
-  
-ggsave(width = 3, height = 2, filename = paste0("~/workspace/1_conesalab/test_scMOSim/paper_plots/", s, "_Kmedoids_scree.pdf"))
+
+ggsave(width = 3, height = 2, filename = paste0("~/workspace/1_conesalab/test_scMOSim/paper_plots/", s, "_G1_Kmedoids_scree.pdf"))
 print("Done")
+
+
+## Check how many genes don't cluster with the cluster it should
+
+rna_with_clust_info$Gene_ID <- rownames(rna_with_clust_info)
+
+comb <- merge(rna_with_clust_info, asocG2, by = "Gene_ID")
+comb <- comb[c("clust", "Gene_cluster")]
+
+s1 <- comb[comb$clust == "clust_2" & comb$Gene_cluster == 1,]
+s2 <- comb[comb$clust == "clust_4" & comb$Gene_cluster == 2,]
+s3 <- comb[comb$clust == "clust_1" & comb$Gene_cluster == 3,]
+s4 <- comb[comb$clust == "clust_5" & comb$Gene_cluster == 4,]
+s5 <- comb[comb$clust == "clust_3" & comb$Gene_cluster == 5,]
+s6 <- comb[comb$clust == "clust_6" & comb$Gene_cluster == 6,]
+s7 <- comb[comb$clust == "clust_7" & comb$Gene_cluster == 8,]
+
+
+scomb <- rbind(s1, s2, s3, s4, s5, s6, s7)
+
+1 - dim(scomb)[1]/dim(comb)[1]

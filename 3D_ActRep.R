@@ -75,8 +75,8 @@ agg_orange_combined <- combine_replicates(agg_orange1, agg_orange2, agg_orange3)
 agg_green_combined <- combine_replicates(agg_green1, agg_green2, agg_green3)
 
 # Select specific gene and peak
-selected_gene <- "CYB5RL"
-selected_peak <- "chr9-107963188-107963693"
+selected_gene <- "AL109659.2"
+selected_peak <- "chr20-32285189-32286526"
 agg_orange_selected <- data.frame(
   CellType = colnames(agg_orange_combined$mean), 
   Mean = agg_orange_combined$mean[selected_gene, ], 
@@ -97,7 +97,7 @@ p1 <- ggplot(agg_orange_selected, aes(x = CellType, y = Mean, group = 1)) +
   geom_point(color = "#15918A") +
   geom_errorbar(aes(ymin = Mean - SEM, ymax = Mean + SEM), width = 0.2, color = "#15918A") +
   theme_classic() +
-  labs(x = "Cell Type", y = "RBP7") +
+  labs(x = "Cell Type", y = "AL109659.2") +
   theme(axis.title.y.left = element_text(color = "black"), axis.text.y.left = element_text(color = "black"),
         axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -106,8 +106,8 @@ p2 <- ggplot(agg_green_selected, aes(x = CellType, y = Mean, group = 1)) +
   geom_point(color = "#F58A53") +
   geom_errorbar(aes(ymin = Mean - SEM, ymax = Mean + SEM), width = 0.2, color = "#F58A53") +
   theme_classic() +
-  labs(y = "chr3-101753518-101753798") +
-  scale_y_continuous(sec.axis = sec_axis(~ ., name = "chr3-101753518-101753798")) +
+  labs(y = "chr20-32285189-32286526") +
+  scale_y_continuous(sec.axis = sec_axis(~ ., name = "chr20-32285189-32286526")) +
   ylim(0, 0.08) +
   theme(axis.title.y.right = element_text(color = "black"), axis.text.y.right = element_text(color = "black"), 
         axis.ticks.y.right = element_line(color = "black"), axis.text.x = element_text(angle = 45, hjust = 1))
@@ -121,8 +121,8 @@ ggsave(filename = "./Repressor_G2.pdf", height = 4, width = 3)
 
 ## Plot also an activator
 # Select specific gene and peak
-selected_gene <- "PTPN22"
-selected_peak <- "chr12-31742761-31743451"
+selected_gene <- "VILL"
+selected_peak <- "chr3-31713856-31714233"
 agg_orange_selected <- data.frame(
   CellType = colnames(agg_orange_combined$mean), 
   Mean = agg_orange_combined$mean[selected_gene, ], 
@@ -143,7 +143,7 @@ p1 <- ggplot(agg_orange_selected, aes(x = CellType, y = Mean, group = 1)) +
   geom_point(color = "#15918A") +
   geom_errorbar(aes(ymin = Mean - SEM, ymax = Mean + SEM), width = 0.2, color = "#15918A") +
   theme_classic() +
-  labs(x = "Cell Type", y = "PTPN22") +
+  labs(x = "Cell Type", y = "VILL") +
   theme(axis.title.y.left = element_text(color = "black"), axis.text.y.left = element_text(color = "black"),
         axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -152,8 +152,8 @@ p2 <- ggplot(agg_green_selected, aes(x = CellType, y = Mean, group = 1)) +
   geom_point(color = "#F58A53") +
   geom_errorbar(aes(ymin = Mean - SEM, ymax = Mean + SEM), width = 0.2, color = "#F58A53") +
   theme_classic() +
-  labs(y = "chr12-31742761-31743451") +
-  scale_y_continuous(sec.axis = sec_axis(~ ., name = "chr12-31742761-31743451")) +
+  labs(y = "chr3-31713856-31714233") +
+  scale_y_continuous(sec.axis = sec_axis(~ ., name = "chr3-31713856-31714233")) +
   ylim(0, 1.5) +
   theme(axis.title.y.right = element_text(color = "black"), axis.text.y.right = element_text(color = "black"), 
         axis.ticks.y.right = element_line(color = "black"), axis.text.x = element_text(angle = 45, hjust = 1))

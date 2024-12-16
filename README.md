@@ -10,13 +10,17 @@ The repository is organized in 3 directories, one for each of the figures depict
 Below, we describe the files included in this repository.  
 
 #### Figure_2
-
+  
+[2A_BulkClustering](Figure_2/2A_BulkClustering.R) Performs a data-driven estimation approach that combines the maximisation of Silhouette’s coefficient with the minimisation of intra-cluster variability to determine the optimal number of clusters and plot them to illustrate the temporal profiles of bulk simulated datasets.  
+  
 [2BC_plots](Figure_2/2BC_plots.R) performs Principal Component Analysis and creates a boxplot of absolute Pearson's correlation values from interactions of RNA-seq genes in Group 1 with ATAC-seq regulators. Regulation is TRUE when the regulator has been simulated to activate/repress gene expression, and FALSE if there is no simulated relationship between the gene and regulator.  
   
 [2D_plotProfile](Figure_2/2D_plotProfile.R) uses MOSim's plotProfile function to depict the relationship between a gene and it's activator, and a gene and it's repressor. It does so for both Group 1 and 2, showing the relationship between RNA-seq and ATAC-seq simulated data.  
 
 #### Figure_3
-
+  
+[3A_SCclustering](Figure_3/3A_SCclustering.R) Performs a data-driven estimation approach that combines the maximisation of Silhouette’s coefficient with the minimisation of intra-cluster variability to determine the optimal number of clusters and plot them to illustrate the co-expression profiles of single-cell simulated datasets.  
+  
 [3B_RNA_PCA_figure](Figure_3/3B_RNA_PCA_figure.R) performs Principal Component analysis and visualizations for single-cell RNA-seq data, showing clustering by cell type, experimental group and replicate.  
 
 [3B_PCA_ATAC_figure](Figure_3/3B_PCA_ATAC_figure.R) performs Principal Component analysis and visualizations for single-cell ATAC-seq data, showing clustering by cell type, experimental group and replicate.  
